@@ -1,0 +1,8 @@
+export(classifyProfile,classifyProfile.rnaseq,classifyProfile.svm,classifyProfile.rnaseq.svm,get.heatmap)
+importFrom("MGFM",getMarkerGenes)
+importFrom("MGFR",getMarkerGenes.rnaseq)
+importFrom("annotate",lookUp)
+importFrom("ggplot2",ggplot,aes,scale_fill_gradient,geom_tile,theme,element_text,labs)
+import(e1071)
+import(stats)
+importFrom("utils", "install.packages", "write.csv2")

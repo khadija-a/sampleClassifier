@@ -1,0 +1,3 @@
+setwd("/Users/khadija/Documents/svn/developed-R-Packages/MGFR-second-version/MGFR/vignettes/")
+Sweave("MGFR.Rnw")
+Sweave("MGFR.Rnw")
