@@ -30,7 +30,7 @@ new.mat <- cbind(ref.matrix, query_profile)
 colnames(new.mat) <- c(colnames(ref.matrix),"query")
 query.ind <- length(colnames(new.mat))
 markers.vec <- c()
-for(i in 1:length(markers.list)){
+for(i in seq_along(markers.list)){
 tissue.name <- unlist(strsplit(names(markers.list)[i],split="_markers"))
 inds <- grep(tissue.name,colnames(ref.matrix),fixed=TRUE)
 num.t <- length(inds)+1
@@ -72,13 +72,13 @@ res.names <- c()
 lim <- 0
 len.mar <- 0
 llen <- c()
-for(i in 1:length(markers_list)){
+for(i in seq_along(markers_list)){
 if(length(markers_list[[i]])>0){
 llen <- c(llen, length(markers_list[[i]]))
 }
 }
 len.mar <- round(fun(llen))
-for(i in 1:length(markers_list)){
+for(i in seq_along(markers_list)){
 if(length(markers_list[[i]])>0){
 lim <- min(len.mar, length(markers_list[[i]]))
 ulist <- unlist(strsplit(markers_list[[i]][1:lim], split=" : "))
@@ -138,13 +138,13 @@ return(res.mat)
 .get_mpsmat <- function(orig_mat, markers_list, fun=median){
 ps <- c()
 llen <- c()
-for(i in 1:length(markers_list)){
+for(i in seq_along(markers_list)){
 if(length(markers_list[[i]])>0){
 llen <- c(llen, length(markers_list[[i]]))
 }
 }
 mar.len <- round(fun(llen))
-for(i in 1:length(markers_list)){
+for(i in seq_along(markers_list)){
 if(length(markers_list[[i]])>0){
 lim <- min(mar.len, length(markers_list[[i]]))
 ulist <- unlist(strsplit(markers_list[[i]][1:lim],split=" : "))
