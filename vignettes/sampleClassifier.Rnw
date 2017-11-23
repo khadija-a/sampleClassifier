@@ -1,31 +1,31 @@
 %\VignetteIndexEntry{sampleClassifier Vignette}
 %\VignettePackage{sampleClassifier}
 %\VignetteEngine{utils::Sweave}
-\documentclass{article}
-\usepackage{Sweave}
 
-\SweaveOpts{keep.source=TRUE}
-<<style, eval=TRUE, echo=FALSE, results=tex>>=
+\documentclass{article}
+
+
+<<style-Sweave, eval=TRUE, echo=FALSE, results=tex>>=
 BiocStyle::latex()
-@ 
-\newcommand{\exitem}[3]{%
-  \item \texttt{\textbackslash#1\{#2\}} #3 \csname#1\endcsname{#2}.%
-}
+@
+
 
 \title{Vignette for the \Biocpkg{sampleClassifier} R Package}
 
-\author{Khadija El Amrani
-	\footnote{Charit\'e - Universit\"atsmedizin Berlin, Berlin Brandenburg Center for Regenerative Therapies (BCRT)}
-	\footnote{Package maintainer, Email: \texttt{khadija.el-amrani@charite.de}}
-	\and Andreas Kurtz$^*$
+\author{
+               Khadija El Amrani\thanks{\email{a.khadija@gmx.de}} and
+               Andreas Kurtz\\
+               Charit\'e - Universit\"atsmedizin Berlin, Berlin Brandenburg Center for Regenerative Therapies (BCRT)
 }
+
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 \maketitle
 
 \tableofcontents
 
-
+\newpage
 %---------------------------------------------------------
 \section{Introduction}
 %---------------------------------------------------------
@@ -45,7 +45,7 @@ running \Biocpkg{sampleClassifier} using microarray and RNA-seq data from the \B
 \section{Contents of the package}
 
 The \Biocpkg{sampleClassifier} package contains the following functions:
-<<>>=
+<<load_package>>=
 library("sampleClassifier")
 ls("package:sampleClassifier")
 @
@@ -182,7 +182,7 @@ We also recommend installing the accompanying data package,
 After installing and loading \Biocpkg{sampleClassifierData}, the individual 
 sampleClassifierData datasets can be loaded using the function \Rfunction{data()}. For instance, the RNA-seq dataset named \Robject{$se\_rnaseq\_refmat$} is stored as a \Robject{SummarizedExperiment} object. The numeric matrix can be extracted using the function \Rfunction{assay()} from the \Biocpkg{SummarizedExperiment} R package:
 
-<<>>=
+<<load_rnaseqdata>>=
 library(sampleClassifierData)
 data("se_rnaseq_refmat")
 rnaseq_refmat <- assay(se_rnaseq_refmat)
@@ -196,14 +196,14 @@ We will use the data provided in the data package \Biocpkg{sampleClassifierData}
 \subsection{Classification of microarray data}
 To classify microarray gene expression profiles, we use the function \Rfunction{classifyProfile()}. It expects a reference and a test matrix. We recommend using 3 replicates for each sample type in the reference matrix. Please note that replicates of the same sample type should have the same name in the reference matrix. We also recommend processing the reference and the test matrix in the same way.\\
 As a reference matrix we use here a microarray dataset derived from the study GSE3526 \cite{Roth2006a}, which is available from GEO \cite{Barrett2007a}. This dataset is named \Robject{$se\_micro\_refmat$} and can be loaded with the following code:
-<<>>=
+<<load_microdata_1>>=
 library(sampleClassifierData)
 data("se_micro_refmat")
 micro_refmat <- assay(se_micro_refmat)
 dim(micro_refmat)
 @
 As a test matrix we use a microarray dataset derived from the study GSE2361 \cite{Ge2005a},  which is available from GEO \cite{Barrett2007a}. This dataset is named \Robject{$se\_micro\_testmat$} and can be loaded with the following code:
-<<>>=
+<<load_microdata_2>>=
 data("se_micro_testmat")
 micro_testmat <- assay(se_micro_testmat)
 dim(micro_testmat)
@@ -213,12 +213,12 @@ Now, we can call the function \Rfunction{classifyProfile()}:
 <<options2, echo=FALSE>>=
 options(width=60)
 @
-<<>>=
+<<classify_microdata>>=
 res1.list <- classifyProfile(ref_matrix=micro_refmat, query_mat=micro_testmat,
 chip1="hgu133plus2",chip2="hgu133a", write2File=FALSE)
 @
 For simplicity, we show only the two top hits for each query sample:
-<<>>=
+<<show_results_1>>=
 lapply(res1.list,"[",c(1,2),,drop=FALSE)
 @
 
@@ -235,7 +235,7 @@ get.heatmap(res1.list)
 
 
 In order to compare the classification predictions for microarray query profiles to those of Support Vector Machines (SVM), the function \Rfunction{classifyProfile.svm()} was implemented based on functions from the R-package \Rpackage{e1071}.
-<<>>=
+<<classify_microdata_svm>>=
 res1.svm.df <- classifyProfile.svm(ref_matrix=micro_refmat, query_mat=micro_testmat,
 chip1="hgu133plus2",chip2="hgu133a")
 res1.svm.df
@@ -245,14 +245,14 @@ The sample 'GSM44673' (tissue: spleen) was misclassified as bone marrow or adipo
 The sample 'GSM44706' (tissue: fetal liver) was misclassified as bone marrow by SVM. \Rfunction{classifyProfile()} predicted both bone marrow and liver as top hits with the same similarity score.\\
 \subsection{Classification of RNA-seq data}
 To classify RNA-seq gene expression profiles, we use the function \Rfunction{classifyProfile.rnaseq()}. It expects a reference and a test matrix. As a reference matrix we use an RNA-seq dataset derived from the study E-MTAB-1733 \cite{Fagerberg2014a}, which is available from ArrayExpress \cite{Brazma2003}. This dataset is named \Robject{$se\_rnaseq\_refmat$} and can be loaded with the following code:
-<<>>=
+<<classify_rnaseq>>=
 library(sampleClassifierData)
 data("se_rnaseq_refmat")
 rnaseq_refmat <- assay(se_rnaseq_refmat)
 dim(rnaseq_refmat)
 @
 As a test matrix we use an RNA-seq dataset derived from the study E-MTAB-513 \cite{Illumina}, which is available from ArrayExpress. This dataset is named \Robject{$se\_rnaseq\_testmat$} and can be loaded with the following code:
-<<>>=
+<<load_testrnaseq>>=
 data("se_rnaseq_testmat")
 rnaseq_testmat <- assay(se_rnaseq_testmat)
 dim(rnaseq_testmat)
@@ -262,12 +262,12 @@ Now, we can call the function \Rfunction{classifyProfile.rnaseq()} to predict th
 <<options4, echo=FALSE>>=
 options(width=60)
 @
-<<>>=
+<<classify_rnaseq2>>=
 res2.list <- classifyProfile.rnaseq(ref_matrix=rnaseq_refmat, query_mat=rnaseq_testmat, 
 gene.ids.type="ensembl",write2File=FALSE)
 @
 For simplicity, we show only the two top hits for each query sample:
-<<>>=
+<<show_results2>>=
 lapply(res2.list,"[",c(1,2),,drop=FALSE)
 @
 
@@ -281,13 +281,13 @@ get.heatmap(res2.list)
 
 
 In order to compare the classification predictions for RNA-seq query profiles to those of SVM, the function \Rfunction{classifyProfile.rnaseq.svm()} was implemented based on functions from the R-package \Rpackage{e1071}.
-<<>>=
+<<show_results3>>=
 res2.svm.df <- classifyProfile.rnaseq.svm(ref_matrix=rnaseq_refmat, query_mat=rnaseq_testmat, 
 gene.ids.type="ensembl")
 res2.svm.df
 @
 Our method \Rfunction{classifyProfile.rnaseq()} classified 9 samples correctly, whereas SVM classified 7 of the 12 query samples correctly. To show the query samples that were misclassified by our method or SVM, we run the following code:
-<<>>=
+<<show_results4>>=
 misclas.inds <- which(as.character(res2.svm.df[,1])!=as.character(res2.svm.df[,2]))
 colnames(res2.svm.df) <- c("query_real_class","predicted_class_by_SVM")
 pred.classifyProfile.rnaseq <- as.character(unlist(lapply(res2.list[which(names(res2.list) %in%
